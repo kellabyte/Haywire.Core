@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+ * This implementation is a port of the Voldemort Vector Clock implementation
+ * http://code.google.com/p/project-voldemort/source/browse/trunk/src/java/voldemort/versioning/VectorClock.java?r=170
+*/
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
