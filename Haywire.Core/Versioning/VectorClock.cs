@@ -10,6 +10,10 @@ using System.Text;
 
 namespace Haywire.Core.Versioning
 {
+    /// <summary>
+    /// An implementation of a logical clock algorithm called Vector Clocks.
+    /// http://en.wikipedia.org/wiki/Vector_clock
+    /// </summary>
     public class VectorClock : IVersion
     {
         private const int MAX_NUMBER_OF_VERSIONS = short.MaxValue;
