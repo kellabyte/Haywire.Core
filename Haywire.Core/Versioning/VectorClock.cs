@@ -8,11 +8,9 @@ namespace Haywire.Core.Versioning
 {
     public class VectorClock : IVersion
     {
-        private const long serialVersionUID = 1;
         private const int MAX_NUMBER_OF_VERSIONS = short.MaxValue;
 
         private List<ClockEntry> versions;
-        //private volatile long timestamp;
         public long Timestamp { get; private set; }
 
         /// <summary>
@@ -217,17 +215,17 @@ namespace Haywire.Core.Versioning
             }
         }
 
-        /**
-         * Is this Reflexive, AntiSymetic, and Transitive? Compare two VectorClocks,
-         * the outcomes will be one of the following: -- Clock 1 is BEFORE clock 2
-         * if there exists an i such that c1(i) <= c(2) and there does not exist a j
-         * such that c1(j) > c2(j). -- Clock 1 is CONCURRANT to clock 2 if there
-         * exists an i, j such that c1(i) < c2(i) and c1(j) > c2(j) -- Clock 1 is
-         * AFTER clock 2 otherwise
-         * 
-         * @param v1 The first VectorClock
-         * @param v2 The second VectorClock
-         */
+        /// <summary>
+        /// Is this Reflexive, AntiSymetic, and Transitive? Compare two VectorClocks,
+        /// the outcomes will be one of the following: -- Clock 1 is BEFORE clock 2
+        /// if there exists an i such that c1(i) <= c(2) and there does not exist a j
+        /// such that c1(j) > c2(j). -- Clock 1 is CONCURRANT to clock 2 if there
+        /// exists an i, j such that c1(i) < c2(i) and c1(j) > c2(j) -- Clock 1 is
+        /// AFTER clock 2 otherwise
+        /// </summary>
+        /// <param name="v1">The first VectorClock</param>
+        /// <param name="v2">The second VectorClock</param>
+        /// <returns>Whether the change occured before, after or concurrently</returns>
         public static Occured Compare(VectorClock v1, VectorClock v2)
         {
             if (v1 == null || v2 == null)
@@ -255,36 +253,34 @@ namespace Haywire.Core.Versioning
                 }
                 else if (ver1.NodeId > ver2.NodeId)
                 {
-                    // since ver1 is bigger that means it is missing a version that
-                    // ver2 has
+                    // since ver1 is bigger that means it is missing a version that ver2 has
                     v2Bigger = true;
                     p2++;
                 }
                 else
                 {
-                    // this means ver2 is bigger which means it is missing a version
-                    // ver1 has
+                    // this means ver2 is bigger which means it is missing a version ver1 has
                     v1Bigger = true;
                     p1++;
                 }
             }
 
-            /* Okay, now check for left overs */
+            // Check for left overs
             if (p1 < v1.versions.Count)
                 v1Bigger = true;
             else if (p2 < v2.versions.Count)
                 v2Bigger = true;
 
-            /* This is the case where they are equal, return BEFORE arbitrarily */
+            // This is the case where they are equal, return BEFORE arbitrarily
             if (!v1Bigger && !v2Bigger)
                 return Occured.Before;
-            /* This is the case where v1 is a successor clock to v2 */
+            // This is the case where v1 is a successor clock to v2
             else if (v1Bigger && !v2Bigger)
                 return Occured.After;
-            /* This is the case where v2 is a successor clock to v1 */
+            // This is the case where v2 is a successor clock to v1
             else if (!v1Bigger && v2Bigger)
                 return Occured.Before;
-            /* This is the case where both clocks are parallel to one another */
+            // This is the case where both clocks are parallel to one another
             else
                 return Occured.Concurrently;
         }
